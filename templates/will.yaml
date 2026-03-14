@@ -1,0 +1,12 @@
+font: Carlito
+margins: compact
+spacing: compact
+h1:
+  font_size: 20
+  align: center
+h2:
+  font_size: 13
+body:
+  font_size: 11
+bullet:
+  space_after: compact
