@@ -10,7 +10,7 @@ from enums.margin_size import MarginSize
 from enums.spacing_size import SpacingSize
 
 # TODO: finalize these values, test w diff spacing
-_SPACE_AFTER_BULLET_MULTIPLIER = 0.4
+_SPACE_AFTER_BULLET_MULTIPLIER = 0.3
 _SPACE_AFTER_LINE_MULTIPLIER = 0.15
 
 
@@ -144,7 +144,7 @@ class ResumePdf(fpdf.FPDF):
             return
 
         if self._after_bullet:
-            self.line_break(_SPACE_AFTER_BULLET_MULTIPLIER * self.font_size)
+            self.line_break(_SPACE_AFTER_BULLET_MULTIPLIER)
 
         if " >> " in text:
             left, right = text.split(" >> ", 1)
