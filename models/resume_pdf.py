@@ -153,28 +153,27 @@ class ResumePdf(fpdf.FPDF):
 
         # TODO: extract into helper, do same for italics
         # left side
-        if "**" in left:
-            parts = left.split("**")
-            for idx, part in enumerate(parts):
-                if len(part) > 0:
-                    self.set_font(
-                        style="B" if idx % 2 == 1 else "",
-                        size=self._body_font_size,
-                    )
-                    self.write(text=part)
-        elif len(left) > 0:
-            self.set_font(style="", size=self._body_font_size)
-            self.write(text=left)
+        parts = left.split("**")
+        for idx, part in enumerate(parts):
+            if len(part) > 0:
+                self.set_font(
+                    style="B" if idx % 2 == 1 else "",
+                    size=self._body_font_size,
+                )
+                self.write(text=part)
 
         # right side
-        if len(right) > 0:
-            # TODO: worth handling bold parsing on right?
-            if right.startswith("**"):
-                right = right.strip("*")
-                self.set_font(style="B", size=self._body_font_size)
-                self.cell(0, text=right, align=fpdf.Align.R)
-            else:
-                self.set_font(style="", size=self._body_font_size)
-                self.cell(0, text=right, align=fpdf.Align.R)
+        # TODO: worth handling bold parsing on right?
+        if right.startswith("**"):
+            right = right.strip("*")
+            style = "B"
+        else:
+            style = ""
+        self.set_font(style=style, size=self._body_font_size)
+        self.cell(0, text=right, align=fpdf.Align.R)
 
+        self._after_line_break_count = 0
         self.line_break()
+
+        self._after_h1 = False
+        self._after_bullet = False
