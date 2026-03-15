@@ -1,0 +1,12 @@
+h1:
+  font_size: 11
+  center: True
+  line: True
+h2:
+  font_size: 11
+  center: True
+  line: False
+body:
+  font_size: 11
+bullet:
+  indent: spacious
