@@ -3,7 +3,7 @@ johndoe@example.com | linkedin.com/in/johndoe | github.com/johndoe
 
 ## Experience
 **Company,** Job title >> **Jan 2026 - Present**
-- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+- Lorem **ipsum dolor sit amet, consectetur** adipiscing elit. *Phasellus congue.* Lorem ipsum dolor sit amet, ***consectetur adipiscing elit. Phasellus congue.*** Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet, consectetur adipiscing elit.

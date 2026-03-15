@@ -68,6 +68,7 @@ class ResumePdf(fpdf.FPDF):
         # TODO: add google fonts
         # self.add_font("Carlito", style="", fname="fonts/Carlito-Regular.ttf")
         # self.add_font("Carlito", style="B", fname="fonts/Carlito-Bold.ttf")
+        # TODO: also add I, BI style
         self.set_font("Helvetica")
 
     def write(self, *args, **kwargs):
@@ -75,14 +76,6 @@ class ResumePdf(fpdf.FPDF):
 
     def cell(self, *args, **kwargs):
         return super().cell(*args, **kwargs, h=self._spacing_in * self.font_size)
-
-    def multi_cell(self, *args, **kwargs):
-        return super().multi_cell(
-            *args,
-            **kwargs,
-            h=self._spacing_in * self.font_size,
-            align=fpdf.Align.L,
-        )
 
     def line_break(self, multiplier: float | None = None) -> None:
         if multiplier is None:
@@ -142,10 +135,10 @@ class ResumePdf(fpdf.FPDF):
             text=self._bullet_char,
             align=fpdf.Align.C,
         )
-        self.multi_cell(0, text=text, new_x=fpdf.XPos.LMARGIN)
-
-        # multi_cell internally adds line break
-        self._after_line_break_count = 1
+        self.l_margin = self.get_x()
+        self._body_left(text=text)
+        self.l_margin = self._margins_in
+        self.line_break()
 
         self._after_h1 = False
         self._after_bullet = True
@@ -153,6 +146,7 @@ class ResumePdf(fpdf.FPDF):
     def body(self, text: str) -> None:
         if self._after_h1:
             self.set_font(style="", size=self._body_font_size)
+            # TODO: what if bold here?
             self.cell(text=text, center=self._h1_centered)
 
             self._after_line_break_count = 0
@@ -171,29 +165,60 @@ class ResumePdf(fpdf.FPDF):
         else:
             left, right = text, ""
 
-        # TODO: extract into helper, do same for italics
-        # left side
-        parts = left.split("**")
-        for idx, part in enumerate(parts):
-            if len(part) > 0:
-                self.set_font(
-                    style="B" if idx % 2 == 1 else "",
-                    size=self._body_font_size,
-                )
-                self.write(text=part)
-
-        # right side
-        # TODO: worth handling bold parsing on right?
-        if right.startswith("**"):
-            right = right.strip("*")
-            style = "B"
-        else:
-            style = ""
-        self.set_font(style=style, size=self._body_font_size)
-        self.cell(0, text=right, align=fpdf.Align.R)
+        self._body_left(left)
+        self._body_right(right)
 
         self._after_line_break_count = 0
         self.line_break()
 
         self._after_h1 = False
         self._after_bullet = False
+
+    def _body_left(self, text: str) -> None:
+        is_bold = False
+        is_italics = False
+        idx = 0
+        while idx < len(text):
+            curr_char = text[idx]
+            next_char = text[idx + 1] if idx < len(text) - 1 else ""
+
+            if curr_char == "\\":
+                curr_char = next_char
+                idx += 1
+            else:
+                if curr_char == next_char == "*":
+                    is_bold = not is_bold
+                    idx += 2
+                    continue
+
+                if curr_char == "*":
+                    is_italics = not is_italics
+                    idx += 1
+                    continue
+
+            style = ""
+            if is_bold:
+                style += "B"
+            if is_italics:
+                style += "I"
+
+            self.set_font(style=style, size=self._body_font_size)
+            self.write(text=curr_char)
+            idx += 1
+
+    def _body_right(self, text: str) -> None:
+        # TODO: raise fpdf2 GH issue for this
+        # Using simplified parsing because right-aligned cell wasn't properly
+        # setting the new_x value to the left of the previous cell.
+        if text.startswith("***"):
+            style = "BI"
+        elif text.startswith("**"):
+            style = "B"
+        elif text.startswith("*"):
+            style = "I"
+        else:
+            style = ""
+        text.strip("*")
+
+        self.set_font(style=style, size=self._body_font_size)
+        self.cell(0, text=text, align=fpdf.Align.R)
