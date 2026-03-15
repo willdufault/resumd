@@ -9,10 +9,8 @@ from enums.line_width import LineWidth
 from enums.margin_size import MarginSize
 from enums.spacing_size import SpacingSize
 
-# TODO: finalize these values, test w diff spacing
 _SPACE_AFTER_BULLET_MULTIPLIER = 0.3
 _SPACE_AFTER_LINE_MULTIPLIER = 0.15
-
 
 with open("templates/default.yaml") as file:
     default_config = yaml.safe_load(file)
@@ -36,16 +34,12 @@ class ResumePdf(fpdf.FPDF):
         self._bullet_indent_in = BulletIndentSize[
             template_config["bullet"]["indent"].upper()
         ].value
-        # self._bullet_space_after_in = (
-        #     _BULLET_SPACE_AFTER_MULTIPLIER * self._spacing_in
-        #     if template_config["bullet"]["space_after"]
-        #     else 0
-        # )
         self._line_width_in = LineWidth[template_config["line"]["width"].upper()].value
 
-        # TODO: better way to do this?
+        # TODO: better way to do this? DRY?
         self._after_h1 = False
         self._after_bullet = False
+        self._after_line_break_count = 0
 
         self._set_up_page()
 
@@ -95,6 +89,11 @@ class ResumePdf(fpdf.FPDF):
             multiplier = 1
         self.ln(multiplier * self._spacing_in * self.font_size)
 
+        self._after_line_break_count += 1
+        if self._after_line_break_count > 1:
+            self._after_h1 = False
+            self._after_bullet = False
+
     def line(self, *args, **kwargs) -> None:
         super().rect(
             *args,
@@ -109,18 +108,29 @@ class ResumePdf(fpdf.FPDF):
     def h1(self, text: str) -> None:
         self.set_font(style="B", size=self._h1_font_size)
         self.cell(text=text, center=self._h1_centered)
+
+        self._after_line_break_count = 0
         self.line_break()
+
         if self._h1_line_after:
             self.line()
+
         self._after_h1 = True
         self._after_bullet = False
 
     def h2(self, text: str) -> None:
+        if self._after_bullet:
+            self.line_break(_SPACE_AFTER_BULLET_MULTIPLIER)
+
         self.set_font(style="B", size=self._h2_font_size)
         self.cell(text=text, center=self._h2_centered)
+
+        self._after_line_break_count = 0
         self.line_break()
+
         if self._h2_line_after:
             self.line()
+
         self._after_h1 = False
         self._after_bullet = False
 
@@ -133,6 +143,10 @@ class ResumePdf(fpdf.FPDF):
             align=fpdf.Align.C,
         )
         self.multi_cell(0, text=text, new_x=fpdf.XPos.LMARGIN)
+
+        # multi_cell internally adds line break
+        self._after_line_break_count = 1
+
         self._after_h1 = False
         self._after_bullet = True
 
@@ -140,7 +154,13 @@ class ResumePdf(fpdf.FPDF):
         if self._after_h1:
             self.set_font(style="", size=self._body_font_size)
             self.cell(text=text, center=self._h1_centered)
+
+            self._after_line_break_count = 0
             self.line_break()
+
+            self._after_h1 = False
+            self._after_bullet = False
+
             return
 
         if self._after_bullet:
