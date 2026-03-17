@@ -1,45 +1,48 @@
 ---
-font: Carlito
+font: Tinos
 margins: compact
 spacing: compact
-smart_spacing: False # TODO: add this feature
 h1:
-  font_size: 20
+  font_size: 11
+  center: True
+  line: True
+h2:
+  font_size: 11
+  bold: True
   center: True
   line: False
-h2:
-  font_size: 14
-  bold: True
-  center: False
-  line: True
 body:
   font_size: 11
 bullet:
   char: "\u2022" # "•" (bullet)
-  indent: compact
-  space_after: True
+  indent: spacious
+  space_after: False
 line:
-  width: standard
+  width: thin
 ---
 # John Doe
-johndoe@example.com | linkedin.com/in/johndoe | github.com/johndoe
+johndoe@example.com * linkedin.com/in/johndoe * github.com/johndoe
 
 ## Experience
-**Company,** Job title >> **Jan 2026 - Present**
+**COMPANY** >> City, ST
+**Job title** >> Jan 2026 - Present
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet.
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet.
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet.
-**Company,** Job title >> **Jan 2025 - Dec 2026**
+
+**COMPANY** >> City, ST
+**Job title** >> Jan 2025 - Dec 2025
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet.
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet.
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet.
 
 ## Projects
-**Project name |** Python, Python, Python 
+**Project name** >> Jan 2026 - Present 
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet.
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet.
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet.
-**Project name |** Python, Python, Python
+
+**Project name** >> Jan 2025 - Dec 2025 
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet.
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet.
 - Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus congue. Lorem ipsum dolor sit amet.
@@ -50,5 +53,5 @@ johndoe@example.com | linkedin.com/in/johndoe | github.com/johndoe
 **Certifications:** AWS, AWS, AWS
 
 ## Education
-**University of XYZ (XYZ)** >> **Dec 2026**
-Bachelor of Science in Computer Science, GPA 4.0
+**UNIVERSITY OF XYZ (XYZ)** >> City, ST
+Bachelor of Science in Computer Science. GPA 4.0 >> Dec 2026
