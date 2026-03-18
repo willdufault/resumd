@@ -1,62 +1,51 @@
-from copy import deepcopy
 from typing import Any
 
 import fpdf
-import yaml
 
 from enums.bullet_indent_size import BulletIndentSize
 from enums.line_width import LineWidth
 from enums.margin_size import MarginSize
 from enums.spacing_size import SpacingSize
+from enums.special_char import SpecialChar
+from models.font_fetcher import (
+    BOLD_FONT_WEIGHT,
+    NORMAL_FONT_WEIGHT,
+    FontPaths,
+)
 
 _SPACE_AFTER_BULLET_MULTIPLIER = 0.3
-_SPACE_AFTER_LINE_MULTIPLIER = 0.15
-
-with open("templates/default.yaml") as file:
-    default_config = yaml.safe_load(file)
+_SPACE_AFTER_LINE_MULTIPLIER = 0.1
 
 
+# TODO: add smart spacing
 class ResumePdf(fpdf.FPDF):
-    def __init__(self, template_config: dict[str, Any]) -> None:
+    def __init__(self, config: dict[str, Any], font_paths: FontPaths) -> None:
         super().__init__(format="letter", unit="in")
 
-        template_config = self._deep_merge(default_config, template_config)
-        self._margins_in = MarginSize[template_config["margins"].upper()].value
-        self._spacing_in = SpacingSize[template_config["spacing"].upper()].value
-        self._h1_font_size = template_config["h1"]["font_size"]
-        self._h1_centered = template_config["h1"]["center"]
-        self._h1_line_after = template_config["h1"]["line"]
-        self._h2_font_size = template_config["h2"]["font_size"]
-        self._h2_centered = template_config["h2"]["center"]
-        self._h2_line_after = template_config["h2"]["line"]
-        self._body_font_size = template_config["body"]["font_size"]
-        self._bullet_char = template_config["bullet"]["char"]
+        self._font_name = config["font"]
+        self._margins_in = MarginSize[config["margins"].upper()].value
+        self._spacing_in = SpacingSize[config["spacing"].upper()].value
+        self._h1_font_size = config["h1"]["font_size"]
+        self._h1_centered = config["h1"]["center"]
+        self._h1_line_after = config["h1"]["line"]
+        self._h2_font_size = config["h2"]["font_size"]
+        self._h2_bold = config["h2"]["bold"]
+        self._h2_centered = config["h2"]["center"]
+        self._h2_line_after = config["h2"]["line"]
+        self._body_font_size = config["body"]["font_size"]
         self._bullet_indent_in = BulletIndentSize[
-            template_config["bullet"]["indent"].upper()
+            config["bullet"]["indent"].upper()
         ].value
-        self._line_width_in = LineWidth[template_config["line"]["width"].upper()].value
+        self._line_width_in = LineWidth[config["line"]["width"].upper()].value
 
         # TODO: better way to do this? DRY?
         self._after_h1 = False
         self._after_bullet = False
         self._after_line_break_count = 0
 
-        self._set_up_page()
+        self._set_up_page(font_paths)
 
-    def _deep_merge(
-        self, left: dict[str, Any], right: dict[str, Any]
-    ) -> dict[str, Any]:
-        """Merge the right dict onto the left one."""
-        merged = deepcopy(left)
-        for key, value in right.items():
-            merged[key] = (
-                self._deep_merge(merged[key], value)
-                if isinstance(value, dict)
-                else value
-            )
-        return merged
-
-    def _set_up_page(self) -> None:
+    def _set_up_page(self, font_paths: FontPaths) -> None:
         self.add_page()
 
         self.c_margin = 0
@@ -65,11 +54,19 @@ class ResumePdf(fpdf.FPDF):
         self.set_line_width(self._line_width_in)
         self.set_text_shaping(True)
 
-        # TODO: add google fonts
-        # self.add_font("Carlito", style="", fname="fonts/Carlito-Regular.ttf")
-        # self.add_font("Carlito", style="B", fname="fonts/Carlito-Bold.ttf")
-        # TODO: also add I, BI style
-        self.set_font("Helvetica")
+        self.add_font(
+            self._font_name, style="", fname=font_paths[("normal", NORMAL_FONT_WEIGHT)]
+        )
+        self.add_font(
+            self._font_name, style="B", fname=font_paths[("normal", BOLD_FONT_WEIGHT)]
+        )
+        self.add_font(
+            self._font_name, style="I", fname=font_paths[("italic", NORMAL_FONT_WEIGHT)]
+        )
+        self.add_font(
+            self._font_name, style="BI", fname=font_paths[("italic", BOLD_FONT_WEIGHT)]
+        )
+        self.set_font(self._font_name)
 
     def write(self, *args, **kwargs):
         return super().write(*args, **kwargs, h=self._spacing_in * self.font_size)
@@ -125,7 +122,6 @@ class ResumePdf(fpdf.FPDF):
         self._after_bullet = False
 
     def bullet(self, text: str) -> None:
-        # TODO: handle bold in bullets
         self.set_font(style="", size=self._body_font_size)
         self.cell(
             self._bullet_indent_in,
