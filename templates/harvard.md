@@ -14,7 +14,6 @@ h2:
 body:
   font_size: 11
 bullet:
-  char: "\u2022" # "•" (bullet)
   indent: spacious
   space_after: False
 line:
