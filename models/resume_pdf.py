@@ -112,10 +112,7 @@ class ResumePdf(fpdf.FPDF):
         self._after_bullet = False
 
     def h2(self, text: str) -> None:
-        if self._after_bullet:
-            self.line_break(_SPACE_AFTER_BULLET_MULTIPLIER)
-
-        self.set_font(style="B", size=self._h2_font_size)
+        self.set_font(style="B" if self._h2_bold else "", size=self._h2_font_size)
         self.cell(text=text, center=self._h2_centered)
 
         self._after_line_break_count = 0
@@ -132,7 +129,7 @@ class ResumePdf(fpdf.FPDF):
         self.set_font(style="", size=self._body_font_size)
         self.cell(
             self._bullet_indent_in,
-            text=self._bullet_char,
+            text=SpecialChar.BULLET.value,
             align=fpdf.Align.C,
         )
         self.l_margin = self.get_x()
@@ -218,7 +215,7 @@ class ResumePdf(fpdf.FPDF):
             style = "I"
         else:
             style = ""
-        text.strip("*")
+        text = text.strip("*")
 
         self.set_font(style=style, size=self._body_font_size)
         self.cell(0, text=text, align=fpdf.Align.R)
