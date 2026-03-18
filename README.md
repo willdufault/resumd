@@ -21,12 +21,13 @@ uv sync
 
 ## Usage
 
-1. Edit `resume.md` with your content
-2. Run:
+1. Edit a template in `templates/` with your content
+2. Set `RESUME_PATH` in `main.py` to point to your template (CLI argument support is planned)
+3. Run:
    ```bash
    uv run main.py
    ```
-3. Open `resume.pdf`
+4. Open `resumes/resume.pdf`
 
 ## Resume Format
 
@@ -36,10 +37,44 @@ uv sync
 | `## Section` | Section heading with divider |
 | `- text` | Bullet point |
 | `**text**` | Bold text |
+| `*text*` | Italic text |
+| `***text***` | Bold italic text |
+| `\*` | Escaped literal `*` |
+| `<!-- comment -->` | Ignored (HTML comment) |
 | `left >> right` | Left + right-aligned pair (e.g. job title and date) |
+| `  -  ` | En-dash (–) (inline text replacement) |
+| `  *  ` | Bullet (•) (inline text delimiter) |
 
 ## Templates
 
-Templates live in `templates/` as YAML files. Built-in options: `default`, `harvard`.
+Templates live in `templates/` as Markdown files with YAML frontmatter. Built-in options: `default`, `harvard`, `mit`, `r_engineering_resumes`.
 
-To switch templates, update the template path in `main.py`.
+To switch templates, update `RESUME_PATH` in `main.py`.
+
+## Configuration
+
+Each template file has a YAML frontmatter block that controls styling:
+
+```yaml
+---
+font: Carlito          # Google Font name (e.g. Carlito, Tinos)
+margins: compact       # compact | standard | spacious
+spacing: compact       # compact | standard | spacious
+h1:
+  font_size: 20
+  center: true
+  line: false
+h2:
+  font_size: 14
+  bold: true
+  center: false
+  line: true
+body:
+  font_size: 11
+bullet:
+  indent: compact      # compact | standard | spacious
+  space_after: true
+line:
+  width: standard      # thin | standard | thick
+---
+```
