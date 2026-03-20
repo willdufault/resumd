@@ -17,7 +17,6 @@ _SPACE_AFTER_BULLET_MULTIPLIER = 0.3
 _SPACE_AFTER_LINE_MULTIPLIER = 0.1
 
 
-# TODO: add smart spacing
 class ResumePdf(fpdf.FPDF):
     def __init__(self, config: dict[str, Any], font_paths: FontPaths) -> None:
         super().__init__(format="letter", unit="in")

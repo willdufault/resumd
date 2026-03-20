@@ -1,8 +1,7 @@
 ---
 font: Carlito
 margins: compact
-spacing: compact
-smart_spacing: False # TODO: add this feature
+spacing: smart
 h1:
   font_size: 20
   center: True
