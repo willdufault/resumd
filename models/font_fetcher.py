@@ -63,10 +63,10 @@ class FontFetcher:
             font_path = Path(
                 f"fonts/{font_name}/{font_name}-{style}-{weight}.{font_type}"
             )
-            font_path.parent.mkdir(parents=True, exist_ok=True)
-
-            response = requests.get(url)
-            with open(font_path, "wb") as file:
-                file.write(response.content)
+            if not font_path.exists():
+                font_path.parent.mkdir(parents=True, exist_ok=True)
+                response = requests.get(url)
+                with open(font_path, "wb") as file:
+                    file.write(response.content)
             font_paths[(style, weight)] = font_path
         return font_paths
