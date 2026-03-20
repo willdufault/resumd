@@ -10,11 +10,13 @@ RESUME_PATH = "templates/default.md"
 def main() -> None:
     with open(RESUME_PATH) as file:
         resume_lines = file.readlines()
+    print("Parsing config...", flush=True, end="")
     config, closing_index = ConfigParser.parse(resume_lines)
-    print("✅ Parsed config")
+    print("✅")
 
+    print("Downloading fonts...", flush=True, end="")
     font_paths = FontFetcher.fetch_font(config["font"])
-    print("✅ Downloaded fonts")
+    print("✅")
 
     pdf = ResumePdf(config, font_paths)
 
@@ -39,8 +41,9 @@ def main() -> None:
         else:
             pdf.body(line)
 
+    print("Writing resume...", flush=True, end="")
     pdf.output("resumes/resume.pdf")
-    print("✅ Output resume")
+    print("✅")
 
 
 if __name__ == "__main__":
