@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 from rich import print
 
@@ -9,26 +10,35 @@ from models.resume_pdf import ResumePdf
 from models.resume_pdf_factory import ResumePdfFactory
 from models.resume_renderer import ResumeRenderer
 
-TEMPLATE_NAME = sys.argv[1]
 
-
+# TODO: for pypi, think about where to give starter templates. in github?
+# in package root dir? command to create them all in curr dir?
+# TODO: where to store fonts? can't use local fonts dir
+# TODO: update readme
+# TODO: create GH actions pipeline to deploy to Pypi
+# TODO: add MD link support!
 def main() -> None:
-    print("Reading template...", flush=True, end="")
-    template_path = f"templates/{TEMPLATE_NAME}.md"
+    if len(sys.argv) < 2:
+        print("[red]Missing resume filepath[/red]")
+        sys.exit()
+    resume_path = sys.argv[1]
+
     try:
-        with open(template_path) as file:
+        with open(resume_path) as file:
             resume_lines = file.readlines()
-    except OSError:
-        print("❌")
-        print(f"[red]Error reading {template_path}[/red]")
+    except Exception:
+        print(f"[red]Error reading {resume_path}[/red]")
         sys.exit()
 
-    print("✅")
-
-    print("Parsing config...", flush=True, end="")
-    config, closing_index = ConfigParser.parse(resume_lines)
-    resume_data = resume_lines[closing_index + 1 :]
-    print("✅")
+    try:
+        print("Parsing config...", flush=True, end="")
+        config, closing_index = ConfigParser.parse(resume_lines)
+        resume_data = resume_lines[closing_index + 1 :]
+        print("✅")
+    except Exception as error:
+        print("❌")
+        print(f"[red]{error}[/red]")
+        sys.exit()
 
     print("Downloading fonts...", flush=True, end="")
     font_paths = FontFetcher.fetch_font(config["font"])
@@ -43,13 +53,14 @@ def main() -> None:
         )
         print("✅")
 
-    print("Building resume...", flush=True, end="")
+    print("Rendering resume...", flush=True, end="")
     pdf = ResumePdf(config, font_paths, spacing_in=spacing_in)
     pdf = ResumeRenderer.render(pdf, resume_data)
     print("✅")
 
-    print("Saving file...", flush=True, end="")
-    pdf.output("resumes/resume.pdf")
+    print("Writing resume...", flush=True, end="")
+    resume_name = Path(resume_path).stem
+    pdf.output(f"{resume_name}.pdf")
     print("✅")
 
 
