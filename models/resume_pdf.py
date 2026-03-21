@@ -7,23 +7,28 @@ from enums.line_width import LineWidth
 from enums.margin_size import MarginSize
 from enums.spacing_size import SpacingSize
 from enums.special_char import SpecialChar
-from models.font_fetcher import (
-    BOLD_FONT_WEIGHT,
-    NORMAL_FONT_WEIGHT,
-    FontPaths,
-)
+from models.font_fetcher import BOLD_FONT_WEIGHT, NORMAL_FONT_WEIGHT, FontPaths
 
 _SPACE_AFTER_BULLET_MULTIPLIER = 0.3
 _SPACE_AFTER_LINE_MULTIPLIER = 0.1
 
 
 class ResumePdf(fpdf.FPDF):
-    def __init__(self, config: dict[str, Any], font_paths: FontPaths) -> None:
+    def __init__(
+        self,
+        config: dict[str, Any],
+        font_paths: FontPaths,
+        spacing_in: float | None = None,
+    ) -> None:
         super().__init__(format="letter", unit="in")
 
         self._font_name = config["font"]
         self._margins_in = MarginSize[config["margins"].upper()].value
-        self._spacing_in = SpacingSize[config["spacing"].upper()].value
+        self._spacing_in = (
+            SpacingSize[config["spacing"].upper()].value
+            if spacing_in is None
+            else spacing_in
+        )
         self._h1_font_size = config["h1"]["font_size"]
         self._h1_centered = config["h1"]["center"]
         self._h1_line_after = config["h1"]["line"]
