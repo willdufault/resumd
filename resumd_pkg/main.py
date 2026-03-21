@@ -11,23 +11,28 @@ from .models.resume_pdf_factory import ResumePdfFactory
 from .models.resume_renderer import ResumeRenderer
 
 
-# TODO: for pypi, think about where to give starter templates. in github?
-# in package root dir? command to create them all in curr dir?
-# TODO: where to store fonts? can't use local fonts dir
-# TODO: update readme
-# TODO: create GH actions pipeline to deploy to Pypi
-# TODO: add MD link support!
-def main() -> None:
-    if len(sys.argv) < 2:
+def init() -> None:
+    print("Copying templates...", flush=True, end="")
+    templates_dir = Path(__file__).parent / ("templates")
+    user_cwd = Path.cwd()
+    for file_path in templates_dir.iterdir():
+        if file_path.is_file():
+            target_path = user_cwd / file_path.name
+            target_path.write_bytes(file_path.read_bytes())
+    print("✅")
+
+
+def build() -> None:
+    if len(sys.argv) < 3:
         print("[red]Missing resume filepath[/red]")
         sys.exit()
-    resume_path = sys.argv[1]
+    resume_path = sys.argv[2]
 
     try:
         with open(resume_path) as file:
             resume_lines = file.readlines()
     except Exception:
-        print(f"[red]Error reading {resume_path}[/red]")
+        print(f"[red]Error reading file {resume_path}[/red]")
         sys.exit()
 
     try:
@@ -40,29 +45,55 @@ def main() -> None:
         print(f"[red]{error}[/red]")
         sys.exit()
 
-    print("Downloading fonts...", flush=True, end="")
-    font_paths = FontFetcher.fetch_font(config["font"])
-    print("✅")
-
-    spacing_in = None
-    if config["spacing"] == "smart":
-        print("Calculating smart spacing...", flush=True, end="")
-        pdf_factory = ResumePdfFactory(config, font_paths)
-        spacing_in = LayoutCalculator._calculate_smart_spacing_in(
-            pdf_factory, resume_data
-        )
+    try:
+        print("Downloading fonts...", flush=True, end="")
+        font_paths = FontFetcher.fetch_font(config["font"])
         print("✅")
 
-    print("Rendering resume...", flush=True, end="")
-    pdf = ResumePdf(config, font_paths, spacing_in=spacing_in)
-    pdf = ResumeRenderer.render(pdf, resume_data)
-    print("✅")
+        spacing_in = None
+        if config["spacing"] == "smart":
+            print("Calculating smart spacing...", flush=True, end="")
+            pdf_factory = ResumePdfFactory(config, font_paths)
+            spacing_in = LayoutCalculator._calculate_smart_spacing_in(
+                pdf_factory, resume_data
+            )
+            print("✅")
 
-    print("Writing resume...", flush=True, end="")
-    stem_path = resume_path.rsplit(".", 1)[0]
-    output_path = f"{stem_path}.pdf"
-    pdf.output(output_path)
-    print("✅")
+        print("Rendering resume...", flush=True, end="")
+        pdf = ResumePdf(config, font_paths, spacing_in=spacing_in)
+        pdf = ResumeRenderer.render(pdf, resume_data)
+        print("✅")
+
+        print("Writing resume...", flush=True, end="")
+        stem_path = resume_path.rsplit(".", 1)[0]
+        output_path = f"{stem_path}.pdf"
+        pdf.output(output_path)
+        print("✅")
+    except Exception as error:
+        print(f"[red]{error}[/red]")
+        sys.exit()
+
+
+# TODO: add MD link support!
+# TODO: add build & init commands
+# TODO: update readme
+# TODO: use testPypi to test page & download
+# TODO: create GH actions pipeline to deploy to testPypi & bump version
+# TODO: upload to real pypi with cmd, update pipeline
+def main() -> None:
+    if len(sys.argv) < 2:
+        print("[red]Must provide a command[/red]")
+        sys.exit()
+    command = sys.argv[1]
+
+    match command:
+        case "init":
+            init()
+        case "build":
+            build()
+        case _:
+            print(f"[red]Unknown command {command}[/red]")
+            sys.exit()
 
 
 if __name__ == "__main__":

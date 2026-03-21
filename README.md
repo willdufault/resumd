@@ -21,13 +21,18 @@ uv sync
 
 ## Usage
 
-1. Edit a template in `templates/` with your content
-2. Set `RESUME_PATH` in `main.py` to point to your template (CLI argument support is planned)
+| Command | Description |
+|---|---|
+| `resumd init` | Copies all built-in templates to the current directory |
+| `resumd build <resume.md>` | Builds a PDF from the given resume Markdown file |
+
+1. Run `resumd init` to copy the built-in templates to your current directory
+2. Edit a template with your content
 3. Run:
    ```bash
-   uv run main.py
+   resumd build <template.md>
    ```
-4. Open `resumes/resume.pdf`
+4. Open the output PDF
 
 ## Resume Format
 
@@ -47,9 +52,7 @@ uv sync
 
 ## Templates
 
-Templates live in `templates/` as Markdown files with YAML frontmatter. Built-in options: `default`, `harvard`, `mit`, `r_engineering_resumes`.
-
-To switch templates, update `RESUME_PATH` in `main.py`.
+Templates are Markdown files with a YAML frontmatter. Run `resumd init` to copy the built-in templates to your current directory, then pass any template to `resumd build`.
 
 ## Configuration
 
@@ -59,7 +62,7 @@ Each template file has a YAML frontmatter block that controls styling:
 ---
 font: Carlito          # Google Font name (e.g. Carlito, Tinos)
 margins: compact       # compact | standard | spacious
-spacing: compact       # compact | standard | spacious
+spacing: compact       # compact | standard | spacious | smart
 h1:
   font_size: 20
   center: true
