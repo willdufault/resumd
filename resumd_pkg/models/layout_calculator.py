@@ -1,6 +1,6 @@
-from enums.spacing_size import SpacingSize
-from models.resume_renderer import ResumeRenderer
-from models.resume_pdf_factory import ResumePdfFactory
+from ..enums.spacing_size import SpacingSize
+from .resume_renderer import ResumeRenderer
+from .resume_pdf_factory import ResumePdfFactory
 
 _SPACING_ADJUST_IN = 0.01
 

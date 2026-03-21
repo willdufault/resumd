@@ -3,12 +3,12 @@ from pathlib import Path
 
 from rich import print
 
-from models.config_parser import ConfigParser
-from models.font_fetcher import FontFetcher
-from models.layout_calculator import LayoutCalculator
-from models.resume_pdf import ResumePdf
-from models.resume_pdf_factory import ResumePdfFactory
-from models.resume_renderer import ResumeRenderer
+from .models.config_parser import ConfigParser
+from .models.font_fetcher import FontFetcher
+from .models.layout_calculator import LayoutCalculator
+from .models.resume_pdf import ResumePdf
+from .models.resume_pdf_factory import ResumePdfFactory
+from .models.resume_renderer import ResumeRenderer
 
 
 # TODO: for pypi, think about where to give starter templates. in github?
@@ -59,8 +59,9 @@ def main() -> None:
     print("✅")
 
     print("Writing resume...", flush=True, end="")
-    resume_name = Path(resume_path).stem
-    pdf.output(f"{resume_name}.pdf")
+    stem_path = resume_path.rsplit(".", 1)[0]
+    output_path = f"{stem_path}.pdf"
+    pdf.output(output_path)
     print("✅")
 
 

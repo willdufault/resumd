@@ -2,6 +2,7 @@ import re
 from pathlib import Path
 
 import requests
+from platformdirs import PlatformDirs
 
 NORMAL_FONT_WEIGHT = 400
 BOLD_FONT_WEIGHT = 700
@@ -60,8 +61,9 @@ class FontFetcher:
             if not is_latin:
                 continue
 
-            font_path = Path(
-                f"fonts/{font_name}/{font_name}-{style}-{weight}.{font_type}"
+            font_path = (
+                PlatformDirs("resumd").user_data_path
+                / f"fonts/{font_name}/{font_name}-{style}-{weight}.{font_type}"
             )
             if not font_path.exists():
                 font_path.parent.mkdir(parents=True, exist_ok=True)

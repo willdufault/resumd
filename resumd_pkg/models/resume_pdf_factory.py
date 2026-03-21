@@ -1,7 +1,7 @@
 from typing import Any
 
-from models.font_fetcher import FontPaths
-from models.resume_pdf import ResumePdf
+from .font_fetcher import FontPaths
+from .resume_pdf import ResumePdf
 
 
 class ResumePdfFactory:

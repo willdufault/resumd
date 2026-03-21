@@ -1,5 +1,5 @@
-from enums.special_char import SpecialChar
-from models.resume_pdf import ResumePdf
+from ..enums.special_char import SpecialChar
+from .resume_pdf import ResumePdf
 
 
 class ResumeRenderer:

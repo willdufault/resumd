@@ -2,12 +2,12 @@ from typing import Any
 
 import fpdf
 
-from enums.bullet_indent_size import BulletIndentSize
-from enums.line_width import LineWidth
-from enums.margin_size import MarginSize
-from enums.spacing_size import SpacingSize
-from enums.special_char import SpecialChar
-from models.font_fetcher import BOLD_FONT_WEIGHT, NORMAL_FONT_WEIGHT, FontPaths
+from ..enums.bullet_indent_size import BulletIndentSize
+from ..enums.line_width import LineWidth
+from ..enums.margin_size import MarginSize
+from ..enums.spacing_size import SpacingSize
+from ..enums.special_char import SpecialChar
+from .font_fetcher import BOLD_FONT_WEIGHT, NORMAL_FONT_WEIGHT, FontPaths
 
 _SPACE_AFTER_BULLET_MULTIPLIER = 0.3
 _SPACE_AFTER_LINE_MULTIPLIER = 0.1
