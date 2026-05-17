@@ -74,12 +74,12 @@ def build() -> None:
         sys.exit()
 
 
-# TODO: add MD link support!
-# TODO: add build & init commands
-# TODO: update readme
-# TODO: use testPypi to test page & download
+# THIS IS WIP
 # TODO: create GH actions pipeline to deploy to testPypi & bump version
 # TODO: upload to real pypi with cmd, update pipeline
+
+
+# TODO: add MD link support!
 def main() -> None:
     if len(sys.argv) < 2:
         print("[red]Must provide a command[/red]")
@@ -90,6 +90,9 @@ def main() -> None:
         case "init":
             init()
         case "build":
+            build()
+        case "THIS IS TEMPORARY TO CHANGE HASH TO TEST PYPI":
+            # TODO: REMOVE THIS
             build()
         case _:
             print(f"[red]Unknown command {command}[/red]")
