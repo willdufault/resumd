@@ -1,6 +1,6 @@
 [project]
 name = "resumd"
-version = "0.1.0"
+version = "0.1.1"
 description = "Generate professional resume PDFs with Markdown"
 readme = "README.md"
 keywords = ["resume", "pdf", "markdown"]

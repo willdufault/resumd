@@ -74,10 +74,8 @@ def build() -> None:
         sys.exit()
 
 
-# THIS IS WIP
 # TODO: create GH actions pipeline to deploy to testPypi & bump version
 # TODO: upload to real pypi with cmd, update pipeline
-
 
 # TODO: add MD link support!
 def main() -> None:
@@ -90,9 +88,6 @@ def main() -> None:
         case "init":
             init()
         case "build":
-            build()
-        case "THIS IS TEMPORARY TO CHANGE HASH TO TEST PYPI":
-            # TODO: REMOVE THIS
             build()
         case _:
             print(f"[red]Unknown command {command}[/red]")
